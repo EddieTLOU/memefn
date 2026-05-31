@@ -2,78 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Meme Finder</title>
-    <link rel="icon" type="image/x-icon" href="https://venngage-wordpress.s3.amazonaws.com/uploads/2022/09/meme_this_is_fine_dog.png">
-    
+    <title>Meme Central</title>
+    <link rel="icon" type="image/png" href="https://venngage-wordpress.s3.amazonaws.com/uploads/2022/09/meme_this_is_fine_dog.png">
     <style>
-        /* Modern Apple-style Reset */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        body { 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* Glassmorphism Card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            text-align: center;
-            width: 90%;
+        .home-menu { 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 30px; 
+            border-radius: 30px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            text-align: center; 
+            width: 90%; 
             max-width: 450px;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        h2 { color: #fff; font-weight: 500; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-
-        img {
-            max-width: 100%;
-            border-radius: 16px;
-            margin: 20px 0;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            display: none;
-            border: 1px solid rgba(255,255,255,0.1);
+        /* Menu Header Icon */
+        .menu-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
-        /* Glassmorphism Buttons */
-        .btn-group { display: flex; flex-direction: column; gap: 12px; }
-        
-        button {
-            padding: 14px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-weight: 600;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        #meme-img { 
+            max-width: 100%; 
+            border-radius: 15px; 
+            margin: 20px 0; 
+            display: none; 
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-stack { display: grid; gap: 12px; }
+        button { 
+            padding: 14px; border-radius: 15px; border: none; background: rgba(255,255,255,0.1); 
+            color: white; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px); 
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
         }
-
-        button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        #find-btn { background: rgba(0, 122, 255, 0.6); border: none; }
-        #find-btn:hover { background: rgba(0, 122, 255, 0.8); }
+        button:hover { background: rgba(255,255,255,0.2); transform: scale(1.02); }
+        #find-btn { background: #e63946; }
+        #find-btn:hover { background: #d62828; }
     </style>
 </head>
 <body>
 
-<div class="glass-card">
-    <h2 id="title">Meme Finder</h2>
-    <img id="img" src="" alt="Meme">
-    <div class="btn-group">
-        <button id="find-btn" onclick="fetchMeme()">Find Random Meme</button>
+<div class="home-menu">
+    <img src="https://venngage-wordpress.s3.amazonaws.com/uploads/2022/09/meme_this_is_fine_dog.png" class="menu-icon" alt="Icon">
+    <h1 id="title" style="color: white; font-size: 1.4rem; margin: 0 0 10px 0;">Meme Home</h1>
+    
+    <img id="meme-img" src="" alt="Meme">
+    
+    <div class="btn-stack">
+        <button id="find-btn" onclick="fetchMeme()">Find New Meme</button>
         <button onclick="copyLink()">Copy Image Address</button>
         <a id="dl" href="#" download="meme.jpg" style="text-decoration:none;">
             <button style="width:100%">Download Image</button>
@@ -83,27 +77,25 @@
 
 <script>
     async function fetchMeme() {
-        try {
-            const response = await fetch('https://api.imgflip.com/get_memes');
-            const data = await response.json();
-            const memes = data.data.memes;
-            const randomMeme = memes[Math.floor(Math.random() * memes.length)];
-            
-            const img = document.getElementById('img');
-            img.src = randomMeme.url;
-            img.style.display = 'block';
-            document.getElementById('title').innerText = randomMeme.name;
-            document.getElementById('dl').href = randomMeme.url;
-        } catch (error) {
-            alert("Error loading meme. Please try again!");
-        }
+        const img = document.getElementById('meme-img');
+        img.style.opacity = 0;
+        
+        const res = await fetch('https://api.imgflip.com/get_memes');
+        const data = await res.json();
+        const m = data.data.memes[Math.floor(Math.random() * data.data.memes.length)];
+        
+        img.src = m.url;
+        img.style.display = 'block';
+        img.style.opacity = 1;
+        document.getElementById('title').innerText = m.name;
+        document.getElementById('dl').href = m.url;
     }
 
     function copyLink() {
-        const url = document.getElementById('img').src;
+        const url = document.getElementById('meme-img').src;
         if(url) {
             navigator.clipboard.writeText(url);
-            alert("Link copied to your clipboard!");
+            alert("Image URL copied!");
         }
     }
 </script>
