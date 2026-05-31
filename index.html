@@ -2,50 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ultimate Random Meme Finder</title>
+    <title>Glassmorphism Meme Finder</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1a1a1a; color: white; margin: 0; }
-        .card { background: #2d2d2d; padding: 25px; border-radius: 15px; text-align: center; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        img { max-width: 100%; height: auto; max-height: 400px; margin: 20px 0; border-radius: 10px; display: none; border: 2px solid #444; }
-        .controls { display: grid; gap: 10px; }
-        button { padding: 12px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; background: #444; color: white; transition: 0.2s; }
-        button:hover { background: #666; }
-        #find-btn { background: #e67e22; }
-        #find-btn:hover { background: #d35400; }
+        /* Modern Apple-style Reset */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        h2 { color: #fff; font-weight: 500; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        img {
+            max-width: 100%;
+            border-radius: 16px;
+            margin: 20px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: none;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Glassmorphism Buttons */
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        
+        button {
+            padding: 14px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        #find-btn { background: rgba(0, 122, 255, 0.6); border: none; }
+        #find-btn:hover { background: rgba(0, 122, 255, 0.8); }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2 id="title">Click to find a meme</h2>
+<div class="glass-card">
+    <h2 id="title">Meme Finder</h2>
     <img id="img" src="" alt="Meme">
-    <div class="controls">
+    <div class="btn-group">
         <button id="find-btn" onclick="fetchMeme()">Find Random Meme</button>
         <button onclick="copyLink()">Copy Image Address</button>
-        <a id="dl" href="#" download="meme.jpg"><button style="width:100%">Download Image</button></a>
+        <a id="dl" href="#" download="meme.jpg" style="text-decoration:none;">
+            <button style="width:100%">Download Image</button>
+        </a>
     </div>
 </div>
 
 <script>
-    // This fetches directly from the Imgflip library of 500+ templates
     async function fetchMeme() {
-        const response = await fetch('https://api.imgflip.com/get_memes');
-        const data = await response.json();
-        const memes = data.data.memes;
-        const randomMeme = memes[Math.floor(Math.random() * memes.length)];
-        
-        const img = document.getElementById('img');
-        img.src = randomMeme.url;
-        img.style.display = 'block';
-        document.getElementById('title').innerText = randomMeme.name;
-        document.getElementById('dl').href = randomMeme.url;
+        try {
+            const response = await fetch('https://api.imgflip.com/get_memes');
+            const data = await response.json();
+            const memes = data.data.memes;
+            const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+            
+            const img = document.getElementById('img');
+            img.src = randomMeme.url;
+            img.style.display = 'block';
+            document.getElementById('title').innerText = randomMeme.name;
+            document.getElementById('dl').href = randomMeme.url;
+        } catch (error) {
+            alert("Error loading meme. Please try again!");
+        }
     }
 
     function copyLink() {
         const url = document.getElementById('img').src;
         if(url) {
             navigator.clipboard.writeText(url);
-            alert("Copied link to clipboard!");
+            alert("Link copied to your clipboard!");
         }
     }
 </script>
